@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "iPhone X",
+    "price": 899,
+    "image": "/images/producto1.jpg",
+    "description": "SIM-Free, Model A19211 6.5-inch Super Retina HD display with OLED technology A12 Bionic chip."
+  },
+  {
+    "id": 2,
+    "name": "MacBook Pro",
+    "price": 1749,
+    "image": "/images/producto2.jpg",
+    "description": "MacBook Pro 2021 with mini-LED display may launch between September, November."
+  },
+  {
+    "id": 3,
+    "name": "HP Pavilion 15-DK1056WM",
+    "price": 1099,
+    "image": "/images/producto3.jpg",
+    "description": "HP Pavilion 15-DK1056WM Gaming Laptop 10th Gen Core i5, 8GB, 256GB SSD, GTX 1650 4GB, Windows 10."
+  }
+]
