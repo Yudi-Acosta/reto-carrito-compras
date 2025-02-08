@@ -1,21 +1,28 @@
 import type React from "react"
 import { AppBar, Toolbar, Typography, Button, Badge } from "@mui/material"
 import { ShoppingCart } from "@mui/icons-material"
-import { Link, useNavigate, useLocation } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useCart } from "../context/useCart"
+import { supabase } from "../config/supabaseClient"
 
 
 const Navbar: React.FC = () => {
   const { getTotalItems } = useCart()
   const navigate = useNavigate()
-  const location = useLocation()
+  
 
-  const handleLogout = () => {
-    // Aquí iría la lógica para cerrar sesión
-    navigate("/")
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      console.error("Error al cerrar sesión:", error.message)
+    } else {
+      console.log("Sesión cerrada correctamente")
+      navigate("/login")
+    }
   }
 
-  if (location.pathname === "/") return null // No mostrar en la página de login
+  // No mostrar en la página de login
+  // if (location.pathname === "/") return null 
 
   return (
     <AppBar position="static">
