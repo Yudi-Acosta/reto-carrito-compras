@@ -9,6 +9,7 @@ import ProductDetails from "./components/ProductDetails"
 import Cart from "./components/Cart"
 import Layout from "./components/Layout"
 import ProtectedRoute from "./components/ProtectedRoute"
+import AdminPanel from "./components/AdminPanel"
 
 const theme = createTheme()
 
@@ -27,6 +28,7 @@ function App() {
                 <Route path="catalog" element={<ProductCatalog />} />
                 <Route path="product/:id" element={<ProductDetails />} />
                 <Route path="cart" element={<Cart />} />
+                <Route path="admin" element={<AdminPanel />} />
               </Route>
             </Route>
           </Routes>

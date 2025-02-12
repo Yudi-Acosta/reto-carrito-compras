@@ -1,6 +1,6 @@
 import type React from "react"
 import { AppBar, Toolbar, Typography, Button, Badge } from "@mui/material"
-import { ShoppingCart } from "@mui/icons-material"
+import { ShoppingCart, Dashboard} from "@mui/icons-material"
 import { Link, useNavigate } from "react-router-dom"
 import { useCart } from "../context/useCart"
 import { supabase } from "../config/supabaseClient"
@@ -9,6 +9,7 @@ import { supabase } from "../config/supabaseClient"
 const Navbar: React.FC = () => {
   const { getTotalItems } = useCart()
   const navigate = useNavigate()
+  // const userRole = localStorage.getItem("userRole")
   
 
   const handleLogout = async () => {
@@ -33,6 +34,14 @@ const Navbar: React.FC = () => {
         <Button color="inherit" component={Link} to="/catalog">
           Catálogo
         </Button>
+        
+
+        <Button color="inherit" component={Link} to="/admin">
+            <Dashboard sx={{ mr: 1 }} />
+            Panel de Administración
+        </Button>
+
+
         <Button color="inherit" component={Link} to="/cart">
           <Badge badgeContent={getTotalItems()} color="secondary">
             <ShoppingCart />
