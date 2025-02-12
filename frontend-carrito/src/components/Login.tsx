@@ -21,6 +21,26 @@ const Login: React.FC = () => {
     }
   }, [])
 
+  // Función para obtener el usuario y guardar el rol en localStorage
+  const getUserData = async (email: string) => {
+    try {
+      const response = await fetch("http://localhost:5000/api/users");
+      if (!response.ok) {
+        throw new Error("Error al obtener usuarios");
+      }
+      const users = await response.json();
+      const user = users.find((u: { email: string }) => u.email === email);
+      if (user) {
+        localStorage.setItem("role", user.role); // 🔹 Guardar rol en localStorage
+      }
+      return user ? user.role : null;
+      
+    } catch (error) {
+      console.error("Error obteniendo el usuario:", error);
+      return null;
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (isSubmitting) return
@@ -38,29 +58,17 @@ const Login: React.FC = () => {
       const data = await response.json()
       console.log("El servidor dice: ", data)
 
-      // if (!response.ok) {
-      //   throw new Error(data.error || "Error en el inicio de sesión")
-      // }
-      // console.log("Login exitoso, redirigiendo...");
-      // navigate("/catalog")
-      if (data.session) {   //probando este if por lo anterior
-        await supabase.auth.setSession(data.session); // ✅ Guardar la sesión en el frontend
+      if (data.session) {  
+        await Promise.all([
+          supabase.auth.setSession(data.session), // ✅ Guardar sesión  
+          getUserData(email) // ✅ Obtener y almacenar el rol  
+        ]);
+      
         console.log("Login exitoso, redirigiendo...");
         navigate("/catalog");
       } else {
         console.error("Error al iniciar sesión:", data.error);
       }
-
-      // Guardar el token y el rol en el localStorage
-      // localStorage.setItem("token", data.user.access_token)
-      // localStorage.setItem("role", data.role)
-
-      // Redirigir basado en el rol
-      // if (data.role === "administrador") {
-      //   navigate("/catalog")
-      // } else {
-      //   navigate("/catalog")
-      // }
       
     } catch (error: unknown) {
       if (error instanceof Error) {

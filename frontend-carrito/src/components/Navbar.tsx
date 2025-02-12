@@ -9,7 +9,7 @@ import { supabase } from "../config/supabaseClient"
 const Navbar: React.FC = () => {
   const { getTotalItems } = useCart()
   const navigate = useNavigate()
-  // const userRole = localStorage.getItem("userRole")
+  const role = localStorage.getItem("role")
   
 
   const handleLogout = async () => {
@@ -17,11 +17,11 @@ const Navbar: React.FC = () => {
     if (error) {
       console.error("Error al cerrar sesión:", error.message)
     } else {
+      localStorage.removeItem("role"); // Eliminar el rol del localStorage
       console.log("Sesión cerrada correctamente")
       navigate("/login")
     }
   }
-
   // No mostrar en la página de login
   // if (location.pathname === "/") return null 
 
@@ -34,19 +34,17 @@ const Navbar: React.FC = () => {
         <Button color="inherit" component={Link} to="/catalog">
           Catálogo
         </Button>
-        
-
-        <Button color="inherit" component={Link} to="/admin">
-            <Dashboard sx={{ mr: 1 }} />
-            Panel de Administración
-        </Button>
-
-
         <Button color="inherit" component={Link} to="/cart">
           <Badge badgeContent={getTotalItems()} color="secondary">
             <ShoppingCart />
           </Badge>
         </Button>
+        {role === "administrador" && (
+          <Button color="inherit" component={Link} to="/admin">
+            <Dashboard sx={{ mr: 1 }} />
+            Panel de Administración
+          </Button>
+        )}
         <Button color="inherit" onClick={handleLogout}>
           Cerrar Sesión
         </Button>

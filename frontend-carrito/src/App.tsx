@@ -22,13 +22,16 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route element={<ProtectedRoute />}>
+            <Route element={<ProtectedRoute allowedRoles={["administrador", "cliente"]} />}>
               <Route element={<Layout />}>
                 <Route index element={<Navigate to="/catalog" replace />} />
                 <Route path="catalog" element={<ProductCatalog />} />
                 <Route path="product/:id" element={<ProductDetails />} />
                 <Route path="cart" element={<Cart />} />
-                <Route path="admin" element={<AdminPanel />} />
+                <Route element={<ProtectedRoute allowedRoles={["administrador"]} />}>
+                  <Route path="admin" element={<AdminPanel />} />
+                </Route>
+                
               </Route>
             </Route>
           </Routes>
