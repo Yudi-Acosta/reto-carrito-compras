@@ -22,6 +22,7 @@ import {
 import { Edit, Delete, Add } from "@mui/icons-material"
 import AddProductModal from "./AddProductModal"
 import EditProductModal from "./EditProductModal"
+import DeleteProductModal from "./DeleteProductModal"
 
 interface Product {
   id: string
@@ -38,6 +39,7 @@ const AdminPanel: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
   const fetchProducts = async () => {
@@ -69,12 +71,22 @@ const AdminPanel: React.FC = () => {
     setIsEditModalOpen(true)
   }
 
+  const handleDeleteProduct = (product: Product) => {
+    setSelectedProduct(product)
+    setIsDeleteModalOpen(true)
+  }
+
   const handleCloseAddModal = () => {
     setIsAddModalOpen(false)
   }
 
   const handleCloseEditModal = () => { //cerrar el modal de edición y limpiar el producto seleccionado
     setIsEditModalOpen(false)
+    setSelectedProduct(null)
+  }
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false)
     setSelectedProduct(null)
   }
 
@@ -86,21 +98,9 @@ const AdminPanel: React.FC = () => {
     setProducts(products.map((p) => (p.id === updatedProduct.id ? updatedProduct : p)))
   }
 
-  // const handleDeleteProduct = async (productId: string) => {
-  //   try {
-  //     const response = await fetch(`http://localhost:5000/api/products/${productId}`, {
-  //       method: "DELETE",
-  //     })
-  //     if (!response.ok) {
-  //       throw new Error("Error al eliminar el producto")
-  //     }
-  //     setSuccessMessage("Producto eliminado correctamente!")
-  //     fetchProducts()
-  //   } catch (error) {
-  //     setError("Error al eliminar el producto. Por favor, intente de nuevo más tarde.")
-  //     console.error("Error deleting product:", error)
-  //   }
-  // }
+  const handleProductDeleted = () => {
+    fetchProducts()
+  }
 
   if (loading) {
     return (
@@ -161,7 +161,7 @@ const AdminPanel: React.FC = () => {
                   <IconButton color="primary" aria-label="editar" onClick={() => handleEditProduct(product)}>
                     <Edit />
                   </IconButton>
-                  <IconButton color="error" aria-label="eliminar">
+                  <IconButton color="error" aria-label="eliminar" onClick={() => handleDeleteProduct(product)}>
                     <Delete />
                   </IconButton>
                 </TableCell>
@@ -172,12 +172,21 @@ const AdminPanel: React.FC = () => {
       </TableContainer>
       <AddProductModal open={isAddModalOpen} onClose={handleCloseAddModal} onProductAdded={handleProductAdded} />
       {selectedProduct && (
-        <EditProductModal
-          open={isEditModalOpen}
-          onClose={handleCloseEditModal}
-          product={selectedProduct}
-          onProductUpdated={handleProductUpdated}
-        />
+        <>
+          <EditProductModal
+            open={isEditModalOpen}
+            onClose={handleCloseEditModal}
+            product={selectedProduct}
+            onProductUpdated={handleProductUpdated}
+          />
+          <DeleteProductModal
+            open={isDeleteModalOpen}
+            onClose={handleCloseDeleteModal}
+            productId={selectedProduct.id}
+            productName={selectedProduct.name}
+            onProductDeleted={handleProductDeleted}
+          />
+        </>
       )}
     </Container>
   )

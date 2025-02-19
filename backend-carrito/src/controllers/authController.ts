@@ -2,7 +2,7 @@ import type { Request, Response } from "express"
 import { supabase } from "../config/supabase"
 
 export const login = async (req: Request, res: Response) => {
-  console.log("Datos recibidos signIn:", req.body); 
+  // console.log("Datos recibidos signIn:", req.body); 
   const { email, password } = req.body
 
   try {
@@ -16,23 +16,13 @@ export const login = async (req: Request, res: Response) => {
       console.error('Error Supabase signIn:', error.message);
       throw error;
     }
-    console.log("Usuario autenticado:", data.user);
+    // console.log("Usuario autenticado:", data.user);
 
-    // Obtener el rol del usuario
-    // const { data: userData, error: userError } = await supabase
-    //   .from("users")
-    //   .select("role")
-    //   .eq("id", data.user.id)
-    //   .single()
-
-    // if (userError) throw userError
-
-    // res.json({ user: data.user, role: userData.role })
     res.json({ 
       message: "Login exitoso", 
       user: data.user,
       session: data.session
-    }); //probando esta linea por la anterior
+    }); 
   } catch (error: unknown) {
     if(error instanceof Error){
         res.status(400).json({ error: error.message })
@@ -53,7 +43,6 @@ export const register = async (req: Request, res: Response) => {
       password,
     });
 
-    // if (error) throw error
     if (error) {
       console.error('Error Supabase signUp:', error.message);
       throw error;

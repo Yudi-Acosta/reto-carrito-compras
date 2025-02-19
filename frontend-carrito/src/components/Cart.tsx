@@ -18,7 +18,7 @@ const Cart: React.FC = () => {
   const { cart, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart()
   const navigate = useNavigate()
 
-  const handleUpdateQuantity = (id: number, quantity: number) => {
+  const handleUpdateQuantity = (id: string, quantity: number) => {
     updateQuantity(id, quantity)
   }
 
