@@ -1,4 +1,6 @@
-import React, { useState } from "react"
+"use client"
+
+import React, { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import {
   Container,
@@ -8,31 +10,60 @@ import {
   CardMedia,
   Button,
   Box,
+  CircularProgress,
   Snackbar,
   SnackbarContent,
 } from "@mui/material"
-import products from "../mock/products.json"
 import { useCart } from "../context/useCart"
+
+interface Product {
+  id: string
+  name: string
+  description: string
+  price: number
+  stock: number
+  image_url: string
+}
 
 const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { addToCart } = useCart()
+  const [product, setProduct] = useState<Product | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [openSnackbar, setOpenSnackbar] = useState(false)
-  const product = products.find((p) => p.id === Number(id))
 
-  if (!product) {
-    return <Typography>Producto no encontrado</Typography>
-  }
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/products/${id}`)
+        if (!response.ok) {
+          throw new Error("Error al obtener el producto")
+        }
+        const data = await response.json()
+        setProduct(data)
+      } catch (err) {
+        setError("Error al cargar el producto. Por favor, intente de nuevo más tarde.")
+        console.error("Error:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProduct()
+  }, [id])
 
   const handleAddToCart = () => {
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      quantity: 1,
-    })
-    setOpenSnackbar(true)
+    if (product) {
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+      })
+      setOpenSnackbar(true)
+    }
   }
 
   const handleCloseSnackbar = () => {
@@ -49,13 +80,37 @@ const ProductDetails: React.FC = () => {
     navigate("/cart")
   }
 
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+        <CircularProgress />
+      </Box>
+    )
+  }
+
+  if (error || !product) {
+    return (
+      <Container>
+        <Typography color="error" variant="h6" align="center">
+          {error || "Producto no encontrado"}
+        </Typography>
+      </Container>
+    )
+  }
+
   return (
-    <Container>
+    <Container maxWidth="sm">
       <Button onClick={() => navigate("/catalog")} sx={{ mt: 2, mb: 2 }}>
         Volver al Catálogo
       </Button>
       <Card>
-        <CardMedia component="img" height="300" image={product.image} alt={product.name} />
+        <CardMedia
+          component="img"
+          height="350"
+          image={product.image_url || "/placeholder.svg"}
+          alt={product.name}
+          sx={{ objectFit: "scale-down" }}
+        />
         <CardContent>
           <Typography gutterBottom variant="h4" component="div">
             {product.name}

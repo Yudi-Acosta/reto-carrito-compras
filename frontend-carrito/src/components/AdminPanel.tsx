@@ -15,8 +15,13 @@ import {
   IconButton,
   Box,
   CircularProgress,
+  Button,
+  Alert,
+  AlertTitle,
 } from "@mui/material"
-import { Edit, Delete } from "@mui/icons-material"
+import { Edit, Delete, Add } from "@mui/icons-material"
+import AddProductModal from "./AddProductModal"
+import EditProductModal from "./EditProductModal"
 
 interface Product {
   id: string
@@ -31,26 +36,71 @@ const AdminPanel: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/products")
+      if (!response.ok) {
+        throw new Error("Error al obtener los productos")
+      }
+      const data = await response.json()
+      setProducts(data)
+    } catch (err) {
+      setError("Error al cargar los productos. Por favor, intente de nuevo más tarde.")
+      console.error("Error:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/products")
-        if (!response.ok) {
-          throw new Error("Error al obtener los productos")
-        }
-        const data = await response.json()
-        setProducts(data)
-      } catch (err) {
-        setError("Error al cargar los productos. Por favor, intente de nuevo más tarde.")
-        console.error("Error:", err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchProducts()
   }, [])
+
+  const handleAddProduct = () => {
+    setIsAddModalOpen(true)
+  }
+
+  const handleEditProduct = (product: Product) => { //abrir el modal de edición y establecer el producto seleccionado que se va a editar
+    setSelectedProduct(product)
+    setIsEditModalOpen(true)
+  }
+
+  const handleCloseAddModal = () => {
+    setIsAddModalOpen(false)
+  }
+
+  const handleCloseEditModal = () => { //cerrar el modal de edición y limpiar el producto seleccionado
+    setIsEditModalOpen(false)
+    setSelectedProduct(null)
+  }
+
+  const handleProductAdded = () => {
+    fetchProducts()
+  }
+
+  const handleProductUpdated = (updatedProduct: Product) => {
+    setProducts(products.map((p) => (p.id === updatedProduct.id ? updatedProduct : p)))
+  }
+
+  // const handleDeleteProduct = async (productId: string) => {
+  //   try {
+  //     const response = await fetch(`http://localhost:5000/api/products/${productId}`, {
+  //       method: "DELETE",
+  //     })
+  //     if (!response.ok) {
+  //       throw new Error("Error al eliminar el producto")
+  //     }
+  //     setSuccessMessage("Producto eliminado correctamente!")
+  //     fetchProducts()
+  //   } catch (error) {
+  //     setError("Error al eliminar el producto. Por favor, intente de nuevo más tarde.")
+  //     console.error("Error deleting product:", error)
+  //   }
+  // }
 
   if (loading) {
     return (
@@ -63,18 +113,24 @@ const AdminPanel: React.FC = () => {
   if (error) {
     return (
       <Container>
-        <Typography color="error" variant="h6" align="center">
+        <Alert severity="error">
+          <AlertTitle>Error</AlertTitle>
           {error}
-        </Typography>
+        </Alert>
       </Container>
     )
   }
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Panel de Administración
-      </Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Panel de Administración
+        </Typography>
+        <Button variant="contained" color="primary" startIcon={<Add />} onClick={handleAddProduct}>
+          Agregar Producto
+        </Button>
+      </Box>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -102,7 +158,7 @@ const AdminPanel: React.FC = () => {
                 <TableCell>${product.price.toFixed(2)}</TableCell>
                 <TableCell>{product.stock}</TableCell>
                 <TableCell>
-                  <IconButton color="primary" aria-label="editar">
+                  <IconButton color="primary" aria-label="editar" onClick={() => handleEditProduct(product)}>
                     <Edit />
                   </IconButton>
                   <IconButton color="error" aria-label="eliminar">
@@ -114,6 +170,15 @@ const AdminPanel: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <AddProductModal open={isAddModalOpen} onClose={handleCloseAddModal} onProductAdded={handleProductAdded} />
+      {selectedProduct && (
+        <EditProductModal
+          open={isEditModalOpen}
+          onClose={handleCloseEditModal}
+          product={selectedProduct}
+          onProductUpdated={handleProductUpdated}
+        />
+      )}
     </Container>
   )
 }
