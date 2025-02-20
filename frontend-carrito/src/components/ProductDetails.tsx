@@ -14,7 +14,7 @@ import {
   Snackbar,
   SnackbarContent,
 } from "@mui/material"
-import { useCart } from "../context/useCart"
+import { useCart } from "../context/cartContext/useCart"
 
 interface Product {
   id: string

@@ -1,7 +1,9 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom"
-import { ThemeProvider, createTheme } from "@mui/material/styles"
+import { ThemeProvider as MuiThemeProvider, createTheme } from "@mui/material/styles"
 import CssBaseline from "@mui/material/CssBaseline"
-import { CartProvider } from "./context/CartProvider"
+import { CartProvider } from "./context/cartContext/CartProvider"
+import { ThemeProvider as CustomThemeProvider } from "./context/themeContext/ThemeProvider"
+import { useTheme } from "./context/themeContext/useTheme"
 import Login from "./components/Login"
 import Register from "./components/Register"
 import ProductCatalog from "./components/ProductCatalog"
@@ -11,11 +13,25 @@ import Layout from "./components/Layout"
 import ProtectedRoute from "./components/ProtectedRoute"
 import AdminPanel from "./components/AdminPanel"
 
-const theme = createTheme()
+const lightTheme = createTheme({
+  palette: {
+    mode: "light",
+    // Puedes personalizar más colores aquí
+  },
+})
 
-function App() {
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    // Puedes personalizar más colores aquí
+  },
+})
+
+function ThemedApp() {
+  const { darkMode } = useTheme()
+
   return (
-    <ThemeProvider theme={theme}>
+    <MuiThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
       <CartProvider>
         <Router>
@@ -31,14 +47,22 @@ function App() {
                 <Route element={<ProtectedRoute allowedRoles={["administrador"]} />}>
                   <Route path="admin" element={<AdminPanel />} />
                 </Route>
-                
               </Route>
             </Route>
           </Routes>
         </Router>
       </CartProvider>
-    </ThemeProvider>
+    </MuiThemeProvider>
+  )
+}
+
+function App() {
+  return (
+    <CustomThemeProvider>
+      <ThemedApp />
+    </CustomThemeProvider>
   )
 }
 
 export default App
+

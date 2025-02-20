@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import { Modal, Box, Typography, TextField, Button, CircularProgress, Alert } from "@mui/material"
+import { Modal, Box, Typography, TextField, Button, CircularProgress, Alert, useTheme} from "@mui/material"
 import { supabase } from "../config/supabaseClient"
 
 interface AddProductModalProps {
@@ -20,6 +20,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ open, onClose, onProd
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const theme = useTheme()
 
   const uploadFile = async (file: File) => {
     console.log("Subiendo imagen a Supabase:", file.name); //Verificar que el archivo llega
@@ -117,9 +118,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ open, onClose, onProd
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: 400,
-          bgcolor: "background.paper",
+          bgcolor: theme.palette.mode === 'dark' ? "#424242":"background.paper",
           boxShadow: 24,
           p: 4,
+          border: `2px solid ${theme.palette.mode === 'dark' ? '#757575' : '#e0e0e0'}`,
+          borderRadius: 2,
+          color: theme.palette.text.primary,
         }}
       >
         <Typography variant="h6" component="h2" gutterBottom>

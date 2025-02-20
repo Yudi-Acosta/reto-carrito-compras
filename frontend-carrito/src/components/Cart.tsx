@@ -12,7 +12,7 @@ import {
   Box,
 } from "@mui/material"
 import { Add, Remove, Delete } from "@mui/icons-material"
-import { useCart } from "../context/useCart"
+import { useCart } from "../context/cartContext/useCart"
 
 const Cart: React.FC = () => {
   const { cart, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart()

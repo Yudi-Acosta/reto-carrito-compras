@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { Modal, Box, Typography, TextField, Button, CircularProgress, Alert } from "@mui/material"
+import { Modal, Box, Typography, TextField, Button, CircularProgress, Alert, useTheme } from "@mui/material"
 import { supabase } from "../config/supabaseClient"
 
 interface Product {
@@ -30,6 +30,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, prod
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const theme = useTheme()
 
   useEffect(() => {
     setName(product.name)
@@ -136,9 +137,12 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, prod
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: 400,
-          bgcolor: "background.paper",
+          bgcolor: theme.palette.mode === 'dark' ? "#424242":"background.paper",
           boxShadow: 24,
           p: 4,
+          border: `2px solid ${theme.palette.mode === 'dark' ? '#757575' : '#e0e0e0'}`,
+          borderRadius: 2,
+          color: theme.palette.text.primary,
         }}
       >
         <Typography variant="h6" component="h2" gutterBottom>
