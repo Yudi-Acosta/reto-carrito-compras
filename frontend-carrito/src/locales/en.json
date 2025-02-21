@@ -1,0 +1,89 @@
+{
+    "navbar": {
+      "title": "My Shop",
+      "catalog": "Catalog",
+      "adminPanel": "Admin Panel",
+      "logout": "Logout"
+    },
+    "login":{
+      "title": "Sign In",
+      "email": "Email",
+      "password": "Password",
+      "signIn": "Sign In",
+      "confirmation": "Don't have an account? Sign up"
+    },
+    "register":{
+      "title": "Sign Up",
+      "email": "Email",
+      "password": "Password",
+      "signUp": "Sign Up",
+      "confirmation": "Already have an account? Sign in"
+    },
+    "productCatalog": {
+      "title": "Product Catalog",
+      "price": "Price",
+      "viewDetails": "View Details",
+      "loading": "Loading...",
+      "error": "Error loading products. Please try again later."
+    },
+    "productDetails": {
+      "backToCatalog": "Back to Catalog",
+      "price": "Price",
+      "addToCart": "Add to Cart",
+      "productAdded": "Product added to cart",
+      "continueShopping": "Continue Shopping",
+      "viewCart": "View Cart"
+    },
+    "cart":{
+      "title": "Shopping Cart",
+      "price": "Price",
+      "total": "Total",
+      "continueShopping":"Continue shopping",
+      "emptyCart": "Empty cart",
+      "goCheckout": "Go to checkout",
+      "cartIsEmpty": "The cart is empty"
+    },
+    "adminPanel": {
+      "title": "Admin Panel",
+      "addProduct": "Add Product",
+      "image": "Image",
+      "name": "Name",
+      "description": "Description",
+      "price": "Price",
+      "stock": "Stock",
+      "actions": "Actions"
+    },
+    "addProduct":{
+      "title": "Add New Product",
+      "name": "Name",
+      "description": "Description",
+      "price": "Price",
+      "stock": "Stock",
+      "cancel": "Cancel",
+      "save": "Save",
+      "successMessage": "Product added successfully"
+    },
+    "editProduct":{
+      "title": "Edit Product",
+      "name": "Name",
+      "description": "Description",
+      "price": "Price",
+      "stock": "Stock",
+      "cancel": "Cancel",
+      "save": "Save",
+      "successMessage": "Product updated successfully"
+    },
+    "deleteproduct":{
+      "title": "Delete Product",
+      "confirmation": "Are you sure you want to delete the product \"{{productName}}\"?",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "successMessage": "Product deleted successfully"
+    },
+    "language": {
+      "es": "Spanish",
+      "en": "English"
+    }
+  }
+  
+  

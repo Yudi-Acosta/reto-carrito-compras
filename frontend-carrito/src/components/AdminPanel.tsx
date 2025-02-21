@@ -23,6 +23,7 @@ import { Edit, Delete, Add } from "@mui/icons-material"
 import AddProductModal from "./AddProductModal"
 import EditProductModal from "./EditProductModal"
 import DeleteProductModal from "./DeleteProductModal"
+import { useTranslation } from "react-i18next"
 
 interface Product {
   id: string
@@ -41,6 +42,7 @@ const AdminPanel: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const { t } = useTranslation()
 
   const fetchProducts = async () => {
     try {
@@ -125,22 +127,22 @@ const AdminPanel: React.FC = () => {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Panel de Administración
+        {t("adminPanel.title")}
         </Typography>
         <Button variant="contained" color="primary" startIcon={<Add />} onClick={handleAddProduct}>
-          Agregar Producto
+        {t("adminPanel.addProduct")}
         </Button>
       </Box>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Imagen</TableCell>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Descripción</TableCell>
-              <TableCell>Precio</TableCell>
-              <TableCell>Stock</TableCell>
-              <TableCell>Acciones</TableCell>
+              <TableCell>{t("adminPanel.image")}</TableCell>
+              <TableCell>{t("adminPanel.name")}</TableCell>
+              <TableCell>{t("adminPanel.description")}</TableCell>
+              <TableCell>{t("adminPanel.price")}</TableCell>
+              <TableCell>{t("adminPanel.stock")}</TableCell>
+              <TableCell>{t("adminPanel.actions")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

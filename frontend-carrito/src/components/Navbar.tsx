@@ -1,10 +1,12 @@
 import type React from "react"
-import { AppBar, Toolbar, Typography, Button, Badge, IconButton } from "@mui/material"
+import { useEffect } from "react"
+import { AppBar, Toolbar, Typography, Button, Badge, IconButton, Select, MenuItem, SelectChangeEvent, useTheme as useMuiTheme} from "@mui/material"
 import { ShoppingCart, Dashboard, Brightness4, Brightness7} from "@mui/icons-material"
 import { Link, useNavigate } from "react-router-dom"
 import { useCart } from "../context/cartContext/useCart"
 import { useTheme } from "../context/themeContext/useTheme"
 import { supabase } from "../config/supabaseClient"
+import { useTranslation } from "react-i18next"
 
 
 const Navbar: React.FC = () => {
@@ -12,7 +14,15 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate()
   const role = localStorage.getItem("role")
   const { darkMode, toggleDarkMode } = useTheme()
-  
+  const { t, i18n } = useTranslation()
+  const theme = useMuiTheme()
+
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("language")
+    if (savedLanguage) {
+      i18n.changeLanguage(savedLanguage)
+    }
+  }, [i18n])
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut()
@@ -25,24 +35,32 @@ const Navbar: React.FC = () => {
     }
   }
 
+  const handleLanguageChange = (event: SelectChangeEvent) => {
+    const newLang = event.target.value
+    i18n.changeLanguage(newLang)
+    localStorage.setItem("language", newLang)
+  }
+
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ bgcolor: theme.palette.mode === 'dark' ? "#1E3A8A" : "primary.main" }}>
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Mi Tienda
+          {t("navbar.title")}
         </Typography>
         <Button color="inherit" component={Link} to="/catalog">
-          Catálogo
+          {t("navbar.catalog")}
         </Button>
+
         <Button color="inherit" component={Link} to="/cart">
           <Badge badgeContent={getTotalItems()} color="secondary">
             <ShoppingCart />
           </Badge>
         </Button>
+
         {role === "administrador" && (
           <Button color="inherit" component={Link} to="/admin">
             <Dashboard sx={{ mr: 1 }} />
-            Panel de Administración
+            {t("navbar.adminPanel")}
           </Button>
         )}
 
@@ -50,8 +68,13 @@ const Navbar: React.FC = () => {
           {darkMode ? <Brightness7 /> : <Brightness4 />}
         </IconButton>
 
+        <Select value={i18n.language} onChange={handleLanguageChange} sx={{ color: "inherit", marginLeft: 2 }}>
+          <MenuItem value="es">{t("language.es")}</MenuItem>
+          <MenuItem value="en">{t("language.en")}</MenuItem>
+        </Select>
+
         <Button color="inherit" onClick={handleLogout}>
-          Cerrar Sesión
+          {t("navbar.logout")}
         </Button>
       </Toolbar>
     </AppBar>

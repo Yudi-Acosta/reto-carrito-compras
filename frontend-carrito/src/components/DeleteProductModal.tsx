@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { Modal, Box, Typography, Button, CircularProgress, Alert, useTheme } from "@mui/material"
+import { useTranslation } from "react-i18next"
 
 interface DeleteProductModalProps {
   open: boolean
@@ -23,6 +24,8 @@ const DeleteProductModal: React.FC<DeleteProductModalProps> = ({
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const theme = useTheme()
+  const { t } = useTranslation()
+
 
   const handleDelete = async () => {
     setLoading(true)
@@ -73,10 +76,10 @@ const DeleteProductModal: React.FC<DeleteProductModalProps> = ({
         }}
       >
         <Typography variant="h6" component="h2" gutterBottom>
-          Eliminar Producto
+          {t("deleteproduct.title")}
         </Typography>
         <Typography variant="body1" gutterBottom>
-          ¿Estás seguro de que deseas eliminar el producto "{productName}"?
+          {t("deleteproduct.confirmation", { productName })}
         </Typography>
         {error && (
           <Alert severity="error" sx={{ mt: 2 }}>
@@ -85,15 +88,15 @@ const DeleteProductModal: React.FC<DeleteProductModalProps> = ({
         )}
         {success && (
           <Alert severity="success" sx={{ mt: 2 }}>
-            Producto eliminado correctamente
+            {t("deleteproduct.successMessage")}
           </Alert>
         )}
         <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
           <Button onClick={onClose} sx={{ mr: 2 }}>
-            Cancelar
+            {t("deleteproduct.cancel")}
           </Button>
           <Button onClick={handleDelete} variant="contained" color="error" disabled={loading}>
-            {loading ? <CircularProgress size={24} /> : "Confirmar"}
+            {loading ? <CircularProgress size={24} /> : t("deleteproduct.confirm")}
           </Button>
         </Box>
       </Box>

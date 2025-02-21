@@ -4,6 +4,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Modal, Box, Typography, TextField, Button, CircularProgress, Alert, useTheme } from "@mui/material"
 import { supabase } from "../config/supabaseClient"
+import { useTranslation } from "react-i18next"
 
 interface Product {
   id: string
@@ -31,6 +32,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, prod
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const theme = useTheme()
+  const { t } = useTranslation()
 
   useEffect(() => {
     setName(product.name)
@@ -146,12 +148,12 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, prod
         }}
       >
         <Typography variant="h6" component="h2" gutterBottom>
-          Editar Producto
+          {t("editProduct.title")}
         </Typography>
         <form onSubmit={handleSubmit}>
           <TextField
             fullWidth
-            label="Nombre"
+            label={t("editProduct.name")}
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -159,7 +161,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, prod
           />
           <TextField
             fullWidth
-            label="Descripción"
+            label={t("editProduct.description")}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             multiline
@@ -168,7 +170,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, prod
           />
           <TextField
             fullWidth
-            label="Precio"
+            label={t("editProduct.price")}
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             type="number"
@@ -177,7 +179,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, prod
           />
           <TextField
             fullWidth
-            label="Stock"
+            label= {t("editProduct.stock")}
             value={stock}
             onChange={(e) => setStock(e.target.value)}
             type="number"
@@ -199,15 +201,15 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, prod
           )}
           {success && (
             <Alert severity="success" sx={{ mt: 2 }}>
-              Producto actualizado correctamente
+              {t("editProduct.successMessage")}
             </Alert>
           )}
           <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
             <Button onClick={onClose} sx={{ mr: 2 }}>
-              Cancelar
+              {t("editProduct.cancel")}
             </Button>
             <Button type="submit" variant="contained" disabled={loading}>
-              {loading ? <CircularProgress size={24} /> : "Guardar"}
+              {loading ? <CircularProgress size={24} /> : t("editProduct.save")}
             </Button>
           </Box>
         </form>

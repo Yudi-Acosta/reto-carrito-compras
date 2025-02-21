@@ -15,6 +15,7 @@ import {
   SnackbarContent,
 } from "@mui/material"
 import { useCart } from "../context/cartContext/useCart"
+import { useTranslation } from "react-i18next"
 
 interface Product {
   id: string
@@ -33,6 +34,7 @@ const ProductDetails: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [openSnackbar, setOpenSnackbar] = useState(false)
+  const { t } = useTranslation()
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -101,7 +103,7 @@ const ProductDetails: React.FC = () => {
   return (
     <Container maxWidth="sm">
       <Button onClick={() => navigate("/catalog")} sx={{ mt: 2, mb: 2 }}>
-        Volver al Catálogo
+        {t("productDetails.backToCatalog")}
       </Button>
       <Card>
         <CardMedia
@@ -119,11 +121,11 @@ const ProductDetails: React.FC = () => {
             {product.description}
           </Typography>
           <Typography variant="h6" color="text.primary">
-            Precio: ${product.price.toFixed(2)}
+            {t("productDetails.price")}: ${product.price.toFixed(2)}
           </Typography>
           <Box sx={{ mt: 2 }}>
             <Button variant="contained" color="primary" onClick={handleAddToCart}>
-              Agregar al Carrito
+              {t("productDetails.addToCart")}
             </Button>
           </Box>
         </CardContent>
@@ -138,14 +140,14 @@ const ProductDetails: React.FC = () => {
         onClose={handleCloseSnackbar}
       >
         <SnackbarContent
-          message="Producto agregado al carrito"
+          message={t("productDetails.productAdded")}
           action={
             <React.Fragment>
               <Button color="secondary" size="small" onClick={handleContinueShopping}>
-                Seguir Comprando
+              {t("productDetails.continueShopping")}
               </Button>
               <Button color="secondary" size="small" onClick={handleViewCart}>
-                Ver Carrito
+              {t("productDetails.viewCart")}
               </Button>
             </React.Fragment>
           }

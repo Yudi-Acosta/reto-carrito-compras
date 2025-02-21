@@ -1,0 +1,89 @@
+{
+    "navbar": {
+      "title": "Mi Tienda",
+      "catalog": "Catálogo",
+      "adminPanel": "Panel de Administración",
+      "logout": "Cerrar Sesión"
+    },
+    "login":{
+      "title": "Iniciar Sesión",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "signIn": "Iniciar Sesión",
+      "confirmation": "¿No tienes una cuenta? Regístrate"
+    },
+    "register":{
+      "title": "Registro",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "signUp": "Registrarse",
+      "confirmation": "¿Ya tienes una cuenta? Inicia sesión"
+    },
+    "productCatalog": {
+      "title": "Catálogo de Productos",
+      "price": "Precio",
+      "viewDetails": "Ver Detalles",
+      "loading": "Cargando...",
+      "error": "Error al cargar los productos. Por favor, intente de nuevo más tarde."
+    },
+    "productDetails": {
+      "backToCatalog": "Volver al Catálogo",
+      "price": "Precio",
+      "addToCart": "Agregar al Carrito",
+      "productAdded": "Producto agregado al carrito",
+      "continueShopping": "Seguir Comprando",
+      "viewCart": "Ver Carrito"
+    },
+    "cart":{
+      "title": "Carrito de Compras",
+      "price": "Precio",
+      "total": "Total",
+      "continueShopping":"Seguir Comprando",
+      "emptyCart": "Vaciar carrito",
+      "goCheckout": "Ir a la página de pago",
+      "cartIsEmpty": "El carrito está vacío"
+    },
+    "adminPanel": {
+      "title": "Panel de Administración",
+      "addProduct": "Agregar Producto",
+      "image": "Imagen",
+      "name": "Nombre",
+      "description": "Descripción",
+      "price": "Precio",
+      "stock": "Stock",
+      "actions": "Acciones"
+    },
+    "addProduct":{
+      "title": "Agregar Nuevo Producto",
+      "name": "Nombre",
+      "description": "Descripción",
+      "price": "Precio",
+      "stock": "Stock",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "successMessage": "Producto agregado con éxito"
+    },
+    "editProduct":{
+      "title": "Editar Producto",
+      "name": "Nombre",
+      "description": "Descripción",
+      "price": "Precio",
+      "stock": "Stock",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "successMessage": "Producto actualizado correctamente"
+    },
+    "deleteproduct":{
+      "title": "Eliminar Producto",
+      "confirmation": "¿Estás seguro de que deseas eliminar el producto \"{{productName}}\"?",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar",
+      "successMessage": "Producto eliminado correctamente"
+    },
+    "language": {
+      "es": "Español",
+      "en": "Inglés"
+    }
+  }
+  
+  

@@ -13,10 +13,12 @@ import {
 } from "@mui/material"
 import { Add, Remove, Delete } from "@mui/icons-material"
 import { useCart } from "../context/cartContext/useCart"
+import { useTranslation } from "react-i18next"
 
 const Cart: React.FC = () => {
   const { cart, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const handleUpdateQuantity = (id: string, quantity: number) => {
     updateQuantity(id, quantity)
@@ -25,16 +27,16 @@ const Cart: React.FC = () => {
   return (
     <Container>
       <Typography variant="h4" component="h1" gutterBottom sx={{ mt: 4 }}>
-        Carrito de Compras
+        {t("cart.title")}
       </Typography>
       {cart.length === 0 ? (
-        <Typography>El carrito está vacío</Typography>
+        <Typography>{t("cart.cartIsEmpty")}</Typography>
       ) : (
         <>
           <List>
             {cart.map((item) => (
               <ListItem key={item.id} divider>
-                <ListItemText primary={item.name} secondary={`Precio: $${item.price.toFixed(2)}`} />
+                <ListItemText primary={item.name} secondary= {`${t("cart.price")}: $${item.price.toFixed(2)}`} />
                 <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
                   <IconButton onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}>
                     <Remove />
@@ -53,18 +55,18 @@ const Cart: React.FC = () => {
             ))}
           </List>
           <Typography variant="h6" sx={{ mt: 2 }}>
-            Total: ${getTotalPrice().toFixed(2)}
+            {t("cart.total")}: ${getTotalPrice().toFixed(2)}
           </Typography>
           <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
             <Button variant="outlined" onClick={() => navigate("/catalog")}>
-              Seguir Comprando
+              {t("cart.continueShopping")}
             </Button>
             <Button variant="contained" color="primary" onClick={() => navigate("/checkout")}>
-              Ir a la página de pago
+              {t("cart.goCheckout")}
             </Button>
           </Box>
           <Button variant="outlined" color="secondary" onClick={clearCart} sx={{ mt: 2 }}>
-            Vaciar Carrito
+            {t("cart.emptyCart")}
           </Button>
         </>
       )}

@@ -4,6 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import { Modal, Box, Typography, TextField, Button, CircularProgress, Alert, useTheme} from "@mui/material"
 import { supabase } from "../config/supabaseClient"
+import { useTranslation } from "react-i18next"
 
 interface AddProductModalProps {
   open: boolean
@@ -21,6 +22,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ open, onClose, onProd
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const theme = useTheme()
+  const { t } = useTranslation()
 
   const uploadFile = async (file: File) => {
     console.log("Subiendo imagen a Supabase:", file.name); //Verificar que el archivo llega
@@ -127,12 +129,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ open, onClose, onProd
         }}
       >
         <Typography variant="h6" component="h2" gutterBottom>
-          Agregar Nuevo Producto
+          {t("addProduct.title")}
         </Typography>
         <form onSubmit={handleSubmit}>
           <TextField
             fullWidth
-            label="Nombre"
+            label= {t("addProduct.name")}
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -140,7 +142,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ open, onClose, onProd
           />
           <TextField
             fullWidth
-            label="Descripción"
+            label= {t("addProduct.description")}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             multiline
@@ -149,7 +151,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ open, onClose, onProd
           />
           <TextField
             fullWidth
-            label="Precio"
+            label= {t("addProduct.price")}
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             type="number"
@@ -158,7 +160,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ open, onClose, onProd
           />
           <TextField
             fullWidth
-            label="Stock"
+            label= {t("addProduct.stock")}
             value={stock}
             onChange={(e) => setStock(e.target.value)}
             type="number"
@@ -178,15 +180,15 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ open, onClose, onProd
           )}
           {success && (
             <Alert severity="success" sx={{ mt: 2 }}>
-              Producto agregado con éxito
+              {t("addProduct.successMessage")}
             </Alert>
           )}
           <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
             <Button onClick={onClose} sx={{ mr: 2 }}>
-              Cancelar
+              {t("addProduct.cancel")}
             </Button>
             <Button type="submit" variant="contained" disabled={loading}>
-              {loading ? <CircularProgress size={24} /> : "Guardar"}
+              {loading ? <CircularProgress size={24} /> : t("addProduct.save")}
             </Button>
           </Box>
         </form>

@@ -3,7 +3,8 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { useNavigate, Link } from "react-router-dom"
-import { Container, Box, TextField, Button, Typography, Alert } from "@mui/material"
+import { Container, Box, TextField, Button, Typography, Alert, useTheme } from "@mui/material"
+import { useTranslation } from "react-i18next"
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState("")
@@ -12,6 +13,9 @@ const Register: React.FC = () => {
   const [success, setSuccess] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const navigate = useNavigate()
+  const theme = useTheme();
+  const { t } = useTranslation()
+
 
   useEffect(() => {
     setEmail("")
@@ -65,10 +69,21 @@ const Register: React.FC = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          padding: 3,
+          borderRadius: 2,
+          bgcolor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.05)" : "#f9f9f9",
+          boxShadow: theme.palette.mode === "dark" ? "none" : "0px 2px 8px rgba(0, 0, 0, 0.1)",
+          border: theme.palette.mode === "dark" ? "2px solid rgba(255, 255, 255, 0.3)" : "2px solid #1976d2",
+          transition: "all 0.3s ease-in-out",
+          "&:hover": {
+            boxShadow: theme.palette.mode === "dark" ? "0px 4px 15px rgba(255, 255, 255, 0.3)" : "0px 4px 12px rgba(0, 0, 0, 0.2)",
+            transform: "scale(1.02)",
+          },
         }}
+        
       >
         <Typography component="h1" variant="h5">
-          Registro
+          {t("register.title")}
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
@@ -76,7 +91,7 @@ const Register: React.FC = () => {
             required
             fullWidth
             id="email"
-            label="Correo electrónico"
+            label= {t("register.email")}
             name="email"
             autoComplete="email"
             autoFocus
@@ -88,7 +103,7 @@ const Register: React.FC = () => {
             required
             fullWidth
             name="password"
-            label="Contraseña"
+            label= {t("register.password")}
             type="password"
             id="password"
             autoComplete="new-password"
@@ -96,12 +111,21 @@ const Register: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <Button type="submit" fullWidth variant="contained" disabled={isSubmitting} sx={{ mt: 3, mb: 2 }}>
-            {isSubmitting ? "Registrando..." : "Registrarse"}
+            {isSubmitting ? "Registrando..." : t("register.signUp")}
           </Button>
           {error && <Alert severity="error">{error}</Alert>}
           {success && <Alert severity="success">{success}</Alert>}
           <Box sx={{ mt: 2 }}>
-            <Link to="/login">¿Ya tienes una cuenta? Inicia sesión</Link>
+            <Link 
+              to="/login"
+              style={{ 
+                color: theme.palette.mode === "dark" ? "#BBDEFB" : "#1976D2", 
+                textDecoration: "none", 
+                fontWeight: "bold" 
+              }}
+              >
+                {t("register.confirmation")}
+            </Link>
           </Box>
         </Box>
       </Box>

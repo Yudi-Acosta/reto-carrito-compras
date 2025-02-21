@@ -2,7 +2,8 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { supabase } from "../config/supabaseClient"
-import { Container, Box, TextField, Button, Typography, Alert } from "@mui/material"
+import { Container, Box, TextField, Button, Typography, Alert, useTheme } from "@mui/material"
+import { useTranslation } from "react-i18next"
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("")
@@ -10,6 +11,8 @@ const Login: React.FC = () => {
   const [error, setError] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const navigate = useNavigate()
+  const theme = useTheme();
+  const { t } = useTranslation()
 
   useEffect(() => {
     // Limpiar los campos al montar el componente y al desmontar
@@ -89,10 +92,16 @@ const Login: React.FC = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-        }}
+          padding: 4,
+          borderRadius: 2,
+          bgcolor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.1)" : "background.paper",
+          boxShadow: theme.palette.mode === "dark" ? "0px 4px 12px rgba(255, 255, 255, 0.2)" : "0px 4px 12px rgba(0, 0, 0, 0.15)",
+          backdropFilter: "blur(5px)",
+          border: theme.palette.mode === "dark" ? "1px solid rgba(255, 255, 255, 0.2)" : "none",
+        }}        
       >
         <Typography component="h1" variant="h5">
-          Iniciar sesión
+          {t("login.title")}
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
@@ -100,7 +109,7 @@ const Login: React.FC = () => {
             required
             fullWidth
             id="email"
-            label="Correo electrónico"
+            label= {t("login.email")}
             name="email"
             autoComplete="email"
             autoFocus
@@ -112,7 +121,7 @@ const Login: React.FC = () => {
             required
             fullWidth
             name="password"
-            label="Contraseña"
+            label= {t("login.password")}
             type="password"
             id="password"
             autoComplete="current-password"
@@ -120,11 +129,20 @@ const Login: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <Button type="submit" fullWidth variant="contained" disabled={isSubmitting} sx={{ mt: 3, mb: 2 }}>
-            {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
+            {isSubmitting ? "Iniciando sesión..." : t("login.signIn")}
           </Button>
           {error && <Alert severity="error">{error}</Alert>}
           <Box sx={{ mt: 2 }}>
-            <Link to="/register">¿No tienes una cuenta? Regístrate</Link>
+          <Link 
+            to="/register"
+            style={{ 
+              color: theme.palette.mode === "dark" ? "#BBDEFB" : "#1976D2",
+              textDecoration: "none", 
+              fontWeight: "bold" 
+            }}
+          >
+            {t("login.confirmation")}
+          </Link>
           </Box>
         </Box>
       </Box>
