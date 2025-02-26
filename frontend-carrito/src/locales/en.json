@@ -24,7 +24,12 @@
       "price": "Price",
       "viewDetails": "View Details",
       "loading": "Loading...",
-      "error": "Error loading products. Please try again later."
+      "error": "Error loading products. Please try again later.",
+      "sortBy": "Sort by",
+      "order": "Order",
+      "name": "Name",
+      "ascending": "Ascending",
+      "descending": "Descending"
     },
     "productDetails": {
       "backToCatalog": "Back to Catalog",
@@ -51,7 +56,11 @@
       "description": "Description",
       "price": "Price",
       "stock": "Stock",
-      "actions": "Actions"
+      "actions": "Actions",
+      "sortBy": "Sort by",
+      "order": "Order",
+      "ascending": "Ascending",
+      "descending": "Descending"
     },
     "addProduct":{
       "title": "Add New Product",

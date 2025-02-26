@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import {
   Container,
   Typography,
@@ -18,6 +18,12 @@ import {
   Button,
   Alert,
   AlertTitle,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Pagination,
+  SelectChangeEvent 
 } from "@mui/material"
 import { Edit, Delete, Add } from "@mui/icons-material"
 import AddProductModal from "./AddProductModal"
@@ -34,6 +40,13 @@ interface Product {
   image_url: string
 }
 
+interface ProductResponse {
+  products: Product[]
+  totalProducts: number
+  totalPages: number
+  currentPage: number
+}
+
 const AdminPanel: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
@@ -42,27 +55,35 @@ const AdminPanel: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [sortBy, setSortBy] = useState<string>("name")
+  const [order, setOrder] = useState<string>("asc")
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
   const { t } = useTranslation()
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/products")
+      setLoading(true)
+      const response = await fetch(
+        `http://localhost:5000/api/products?sortBy=${sortBy}&order=${order}&page=${page}&limit=10`,
+      )
       if (!response.ok) {
         throw new Error("Error al obtener los productos")
       }
-      const data = await response.json()
-      setProducts(data)
+      const data: ProductResponse = await response.json()
+      setProducts(data.products)
+      setTotalPages(data.totalPages)
     } catch (err) {
       setError("Error al cargar los productos. Por favor, intente de nuevo más tarde.")
       console.error("Error:", err)
     } finally {
       setLoading(false)
     }
-  }
+  }, [sortBy, order, page])
 
   useEffect(() => {
     fetchProducts()
-  }, [])
+  }, [fetchProducts])
 
   const handleAddProduct = () => {
     setIsAddModalOpen(true)
@@ -104,6 +125,20 @@ const AdminPanel: React.FC = () => {
     fetchProducts()
   }
 
+  const handleSortByChange = (event: SelectChangeEvent) => {
+    setSortBy(event.target.value as string)
+    setPage(1)
+  }
+
+  const handleOrderChange = (event: SelectChangeEvent) => {
+    setOrder(event.target.value as string)
+    setPage(1)
+  }
+
+  const handlePageChange = (_: unknown, value: number) => {
+    setPage(value)
+  }
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
@@ -132,6 +167,22 @@ const AdminPanel: React.FC = () => {
         <Button variant="contained" color="primary" startIcon={<Add />} onClick={handleAddProduct}>
         {t("adminPanel.addProduct")}
         </Button>
+      </Box>
+      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+        <FormControl variant="outlined" sx={{ minWidth: 120 }}>
+          <InputLabel id="sort-by-label">{t("adminPanel.sortBy")}</InputLabel>
+          <Select labelId="sort-by-label" value={sortBy} onChange={handleSortByChange} label={t("adminPanel.sortBy")}>
+            <MenuItem value="name">{t("adminPanel.name")}</MenuItem>
+            <MenuItem value="price">{t("adminPanel.price")}</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl variant="outlined" sx={{ minWidth: 120 }}>
+          <InputLabel id="order-label">{t("adminPanel.order")}</InputLabel>
+          <Select labelId="order-label" value={order} onChange={handleOrderChange} label={t("adminPanel.order")}>
+            <MenuItem value="asc">{t("adminPanel.ascending")}</MenuItem>
+            <MenuItem value="desc">{t("adminPanel.descending")}</MenuItem>
+          </Select>
+        </FormControl>
       </Box>
       <TableContainer component={Paper}>
         <Table>
@@ -172,6 +223,9 @@ const AdminPanel: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+        <Pagination count={totalPages} page={page} onChange={handlePageChange} color="primary" />
+      </Box>
       <AddProductModal open={isAddModalOpen} onClose={handleCloseAddModal} onProductAdded={handleProductAdded} />
       {selectedProduct && (
         <>

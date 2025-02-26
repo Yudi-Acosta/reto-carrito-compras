@@ -5,11 +5,44 @@ import { supabase } from "../config/supabase"
 export const getAllProducts = async (req: Request, res: Response) => {
   
   try {
-    const { data, error } = await supabase.from("products").select("*")
+    // Leer parámetros con valores predeterminados
+    const { sortBy = "name", order = "asc", page = "1", limit = "10" } = req.query
 
-    if (error) throw error
+    // Validar parámetros
+    const sortColumn = ["name", "price"].includes(sortBy as string) ? sortBy : "name"
+    const sortOrder = order === "desc" ? "desc" : "asc"
+    const currentPage = Math.max(Number.parseInt(page as string, 10), 1)  // Evitar valores menores a 1
+    const itemsPerPage = Math.max(Number.parseInt(limit as string, 10), 1)
 
-    res.status(200).json(data)
+    // Calcular offset
+    const offset = (currentPage - 1) * itemsPerPage
+
+    // Primera consulta: Obtener productos paginados y ordenados
+    const { data: products, error: productError } = await supabase
+      .from("products")
+      .select("*")  // No incluir { count: "exact" }
+      .order(sortColumn as any, { ascending: sortOrder === "asc" })
+      .range(offset, offset + itemsPerPage - 1)
+
+    if (productError) throw productError
+
+    // Segunda consulta: Contar total de productos
+    const { count, error: countError } = await supabase
+      .from("products")
+      .select("*", { count: "exact", head: true })  // Solo cuenta los registros
+
+    if (countError) throw countError
+
+    // Calcular total de páginas
+    const totalPages = Math.ceil((count || 0) / itemsPerPage)
+
+    // Responder con los datos
+    res.json({
+      products,
+      totalProducts: count,
+      totalPages,
+      currentPage,
+    })
   } catch (error: unknown) {
     if(error instanceof Error){
         res.status(500).json({ error: error.message })
