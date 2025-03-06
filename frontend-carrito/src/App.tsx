@@ -16,14 +16,12 @@ import AdminPanel from "./components/AdminPanel"
 const lightTheme = createTheme({
   palette: {
     mode: "light",
-    // Puedes personalizar más colores aquí
   },
 })
 
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
-    // Puedes personalizar más colores aquí
   },
 })
 

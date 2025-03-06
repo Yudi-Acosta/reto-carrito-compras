@@ -139,7 +139,7 @@ export const updateProduct = async (req: Request, res: Response) : Promise<void>
 }
 
 // Eliminar un producto
-export const deleteProduct = async (req: Request, res: Response) => {
+export const deleteProduct = async (req: Request, res: Response) :  Promise<void> => {
   const { id } = req.params
 
   try {
@@ -151,7 +151,8 @@ export const deleteProduct = async (req: Request, res: Response) => {
       .single()
       
     if (fetchError || !product) {
-      return res.status(404).json({ error: "Producto no encontrado" })
+      res.status(404).json({ error: "Producto no encontrado" })
+      return;
     }
 
     // Si el producto tiene imagen, eliminarla primero
@@ -166,7 +167,8 @@ export const deleteProduct = async (req: Request, res: Response) => {
 
         if (deleteImageError) {
           console.error("Error al eliminar la imagen:", deleteImageError.message)
-          return res.status(500).json({ error: "No se pudo eliminar la imagen, el producto no será eliminado" })
+          res.status(500).json({ error: "No se pudo eliminar la imagen, el producto no será eliminado" })
+          return;
         }
       }
     }
@@ -175,7 +177,8 @@ export const deleteProduct = async (req: Request, res: Response) => {
     const { error: deleteError  } = await supabase.from("products").delete().eq("id", id)
 
     if (deleteError) {
-      return res.status(500).json({ error: "No se pudo eliminar el producto" })
+      res.status(500).json({ error: "No se pudo eliminar el producto" })
+      return;
     }
 
     res.status(200).json({ message: "Producto eliminado correctamente" })
