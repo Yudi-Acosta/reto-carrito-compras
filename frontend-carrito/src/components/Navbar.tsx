@@ -5,17 +5,17 @@ import { ShoppingCart, Dashboard, Brightness4, Brightness7} from "@mui/icons-mat
 import { Link, useNavigate } from "react-router-dom"
 import { useCart } from "../context/cartContext/useCart"
 import { useTheme } from "../context/themeContext/useTheme"
-import { supabase } from "../config/supabaseClient"
 import { useTranslation } from "react-i18next"
+import { useAuth } from "../context/authContext/useAuth"
 
 
 const Navbar: React.FC = () => {
   const { getTotalItems } = useCart()
   const navigate = useNavigate()
-  const role = localStorage.getItem("role")
   const { darkMode, toggleDarkMode } = useTheme()
   const { t, i18n } = useTranslation()
   const theme = useMuiTheme()
+  const { role, setUser, setRole } = useAuth()
 
   useEffect(() => {
     const savedLanguage = localStorage.getItem("language")
@@ -25,20 +25,27 @@ const Navbar: React.FC = () => {
   }, [i18n])
 
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut()
-    if (error) {
-      console.error("Error al cerrar sesión:", error.message)
-    } else {
-      localStorage.removeItem("role"); // Eliminar el rol del localStorage
-      console.log("Sesión cerrada correctamente")
-      navigate("/login")
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      })
+
+      if (response.ok) {
+        setUser(null)
+        setRole(null)
+        navigate("/login")
+      } else {
+        console.error(`Error al cerrar sesión: ${response.status}`)
+      }
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error)
     }
   }
 
   const handleLanguageChange = (event: SelectChangeEvent) => {
     const newLang = event.target.value
     i18n.changeLanguage(newLang)
-    localStorage.setItem("language", newLang)
   }
 
   return (

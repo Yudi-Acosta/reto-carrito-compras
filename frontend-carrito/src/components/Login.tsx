@@ -1,9 +1,9 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { useNavigate, Link } from "react-router-dom"
-import { supabase } from "../config/supabaseClient"
 import { Container, Box, TextField, Button, Typography, Alert, useTheme } from "@mui/material"
 import { useTranslation } from "react-i18next"
+import { useAuth } from "../context/authContext/useAuth"
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("")
@@ -13,6 +13,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate()
   const theme = useTheme();
   const { t } = useTranslation()
+  const { setUser, setRole } = useAuth();
 
   useEffect(() => {
     // Limpiar los campos al montar el componente y al desmontar
@@ -23,26 +24,6 @@ const Login: React.FC = () => {
       setPassword("")
     }
   }, [])
-
-  // Función para obtener el usuario y guardar el rol en localStorage
-  const getUserData = async (email: string) => {
-    try {
-      const response = await fetch("http://localhost:5000/api/users");
-      if (!response.ok) {
-        throw new Error("Error al obtener usuarios");
-      }
-      const users = await response.json();
-      const user = users.find((u: { email: string }) => u.email === email);
-      if (user) {
-        localStorage.setItem("role", user.role); // 🔹 Guardar rol en localStorage
-      }
-      return user ? user.role : null;
-      
-    } catch (error) {
-      console.error("Error obteniendo el usuario:", error);
-      return null;
-    }
-  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -56,23 +37,22 @@ const Login: React.FC = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
+        credentials: "include", // Importante para incluir las cookies
       })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Error al iniciar sesión")
+      }
 
       const data = await response.json()
       console.log("El servidor dice: ", data)
 
-      if (data.session) {  
-        await Promise.all([
-          supabase.auth.setSession(data.session), // ✅ Guardar sesión  
-          getUserData(email) // ✅ Obtener y almacenar el rol  
-        ]);
+      setUser(data.user);
+      setRole(data.role);
       
-        console.log("Login exitoso, redirigiendo...");
-        navigate("/catalog");
-      } else {
-        console.error("Error al iniciar sesión:", data.error);
-      }
-      
+      console.log("Login exitoso, redirigiendo...");
+      navigate("/catalog");
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message)

@@ -4,6 +4,7 @@ import CssBaseline from "@mui/material/CssBaseline"
 import { CartProvider } from "./context/cartContext/CartProvider"
 import { ThemeProvider as CustomThemeProvider } from "./context/themeContext/ThemeProvider"
 import { useTheme } from "./context/themeContext/useTheme"
+import { AuthProvider } from "./context/authContext/AuthProvider"
 import Login from "./components/Login"
 import Register from "./components/Register"
 import ProductCatalog from "./components/ProductCatalog"
@@ -31,25 +32,27 @@ function ThemedApp() {
   return (
     <MuiThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
-      <CartProvider>
-        <Router>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route element={<ProtectedRoute allowedRoles={["administrador", "cliente"]} />}>
-              <Route element={<Layout />}>
-                <Route index element={<Navigate to="/catalog" replace />} />
-                <Route path="catalog" element={<ProductCatalog />} />
-                <Route path="product/:id" element={<ProductDetails />} />
-                <Route path="cart" element={<Cart />} />
-                <Route element={<ProtectedRoute allowedRoles={["administrador"]} />}>
-                  <Route path="admin" element={<AdminPanel />} />
+      <AuthProvider>
+        <CartProvider>
+          <Router>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route element={<ProtectedRoute allowedRoles={["administrador", "cliente"]} />}>
+                <Route element={<Layout />}>
+                  <Route index element={<Navigate to="/catalog" replace />} />
+                  <Route path="catalog" element={<ProductCatalog />} />
+                  <Route path="product/:id" element={<ProductDetails />} />
+                  <Route path="cart" element={<Cart />} />
+                  <Route element={<ProtectedRoute allowedRoles={["administrador"]} />}>
+                    <Route path="admin" element={<AdminPanel />} />
+                  </Route>
                 </Route>
               </Route>
-            </Route>
-          </Routes>
-        </Router>
-      </CartProvider>
+            </Routes>
+          </Router>
+        </CartProvider>
+      </AuthProvider>
     </MuiThemeProvider>
   )
 }

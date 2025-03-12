@@ -1,38 +1,18 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
 import { Navigate, Outlet } from "react-router-dom"
 import { CircularProgress, Box } from "@mui/material"
-import { supabase } from "../config/supabaseClient"
+import { useAuth } from "../context/authContext/useAuth"
 
 interface ProtectedRouteProps {
   allowedRoles?: string[]
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles = ["administrador", "cliente"] }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
-  const [userRole, setUserRole] = useState<string | null>(null)
+  const { user, role, isLoading } = useAuth()
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession()
-      const storedRole = localStorage.getItem("role") //
-
-      if (session && storedRole) {
-        setIsAuthenticated(true)
-        setUserRole(storedRole)
-      } else {
-        setIsAuthenticated(false)
-      }
-    }
-
-    checkAuth()
-  }, [])
-
-  if (isAuthenticated === null) {
+  if (isLoading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
         <CircularProgress />
@@ -41,12 +21,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles = ["admini
   }
 
   // Si el usuario no está autenticado, redirigir a login
-  if (!isAuthenticated) {
+  if (!user) {
     return <Navigate to="/login" replace />
   }
 
-  // Si el rol del usuario no está en `allowedRoles`, redirigir a `/catalog`
-  if (userRole && !allowedRoles.includes(userRole)) {
+  // Si el usuario está autenticado pero no tiene un rol permitido, redirigir a /catalog
+  if (role && !allowedRoles.includes(role)) {
     console.log("No tienes permiso para acceder a esta página")
     return <Navigate to="/catalog" replace />
   }
@@ -55,3 +35,4 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles = ["admini
 }
 
 export default ProtectedRoute
+
