@@ -73,6 +73,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ open, onClose, onProd
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           name,
           description,

@@ -6,13 +6,15 @@ import {
   updateProduct,
   deleteProduct,
 } from "../controllers/productController"
+import { authenticate, isAdmin } from "../middlewares/authMiddleware"
 
 const router = express.Router()
 
 router.get("/", getAllProducts)
 router.get("/:id", getProductById)
-router.post("/", createProduct)
-router.put("/:id", updateProduct)
-router.delete("/:id", deleteProduct)
+// rutas protegidas solo para administradores
+router.post("/", authenticate, isAdmin,  createProduct)
+router.put("/:id", authenticate, isAdmin, updateProduct)
+router.delete("/:id", authenticate, isAdmin, deleteProduct)
 
 export default router

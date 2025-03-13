@@ -103,6 +103,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, prod
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(updatedProduct),
       })
 
